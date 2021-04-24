@@ -1,14 +1,19 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { PostgresClient } from './clients/PostgresClient';
 
 const app = express();
 
-const port = 3000;
+const port = process.env.port || 3000;
+const postgresClient = new PostgresClient();
+
+await(postgresClient.initializeDb());
 
 app.use(bodyParser.json());
 
 app.use('/', (req, res) => {
     res.send('Messaging API is ready');
+
 });
 
 app.listen(port, () => {

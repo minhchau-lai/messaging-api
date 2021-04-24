@@ -6,6 +6,7 @@
 - TypeScript
 - PostgreSQL
 - Jest
+- Docker + Docker Compose
 
 ### Design considerations
 

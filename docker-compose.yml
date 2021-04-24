@@ -5,7 +5,7 @@ services:
     depends_on:
     - postgres
     environment:
-      DATABASE_URL: postgres://user:pass@postgres:5432/db
+      DATABASE_URL: postgres://minhchau:lai@postgres:5432/db
       NODE_ENV: development
       PORT: 3000
     ports:
@@ -18,7 +18,7 @@ services:
   postgres:
     image: postgres:10.4
     ports:
-    - "35432:5432"
+    - "5432:5432"
     environment:
       POSTGRES_USER: minhchau
       POSTGRES_PASSWORD: lai
