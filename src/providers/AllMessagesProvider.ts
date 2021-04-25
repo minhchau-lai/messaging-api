@@ -1,4 +1,4 @@
-import { PostgresClient } from '../clients/PostgresClient';
+import { PostgresClient } from '../clients/PostgresClient/PostgresClient';
 
 export const AllMessagesProvider = (postgresClient: PostgresClient) => {
     return async (req, res) => {

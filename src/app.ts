@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { PostgresClient } from './clients/PostgresClient';
+import { PostgresClient } from './clients/PostgresClient/PostgresClient';
 import { MessagesRouter } from './routes/MessagesRouter';
 
 const app = express();

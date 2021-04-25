@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { PostgresClient } from '../clients/PostgresClient';
+import { PostgresClient } from '../clients/PostgresClient/PostgresClient';
 
 export const SendMessagesProvider = (postgresClient: PostgresClient) => {
     return async (req, res) => {
