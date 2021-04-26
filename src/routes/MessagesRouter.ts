@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { PostgresClient } from '../clients/PostgresClient/PostgresClient';
-import { AllMessagesProvider } from '../providers/AllMessagesProvider';
+import { AllMessagesProvider } from '../providers/AllMessagesProvider/AllMessagesProvider';
 import { SendMessagesProvider } from '../providers/SendMessagesProvider';
 import {UserMessagesProvider} from "../providers/UserMessagesProvider";
 
