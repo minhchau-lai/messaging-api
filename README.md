@@ -24,18 +24,30 @@ to confirm the message is stored, but the client will have to handle delivery on
 - Node + Express
 - TypeScript
 - PostgreSQL
+- node-postgres
 - Jest
 - Docker + Docker Compose
 - Swagger
 
 ### Installation and running locally
 1. Ensure [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) are installed.
-2. Run `docker-compose up`.
+2. Run `docker-compose up` in project directory.
 3. A Postgres container and API container will now start.
 4. API is accessible at `localhost:3000`
 5. Use Postman, `localhost:3000/api-docs`, or similar tool to execute calls.
 
+### Running Tests
+1. Ensure [Node](https://nodejs.org/en/download/) is installed.
+2. Run `npm install` in project directory.
+3. Run `npm run test` or `npm run test -- --coverage`.
+
 ### API
+#### Pre-existing Users in User Table
+| username |
+|----------|
+|minhchau-lai|
+|john-smith|
+|alex.realperson|
 #### Endpoints
 
 Swagger API docs also available at `localhost:3000` when API is running.
@@ -194,6 +206,38 @@ Gets messages for a user within the last 30 days with a limit of 100.
 ```
 
 ### Design considerations
+##### Technologies chosen
+Node with Express was chosen because it is lightweight, performant for an API light on CPU-intensive processing,
+and its widespread adoption. For database choice, with the current implementation there should be little performance
+difference between a relational and NoSQL db, so Postgres was chosen for its ease of use, scalability up to a pretty solid load, 
+and it is open-source. TypeScript is preferred over JavaScript due to fewer errors during development with type checking.
+The application deploys with Docker for extremely easy setup with one command, and is easy to migrate to Kubernetes
+in the future for scalability.
 
-### Considerations for future work
+##### API Structure
+The API is structured using a `router <-> provider <-> client <-> db` model. This provides a strong separation of concerns.
+The router validates requests and forwards them to the appropriate provider. The providers contains all business logic.
+Different providers handle different routes, reducing code bloat, ease of testing, and allows different routes to use 
+different clients (perhaps if a particular endpoint needs to use Redis instead of Postgres). This also provides easy
+extensibility, as more routers and providers can be added for different business concerns (such as user or conversation endpoints).
+
+##### Testing
+With all business logic in the providers, it is easy to use Jest to mock clients and unit test the business logic.
+The main app itself and the router contain no business logic to unit test, and would need to be tested via integration tests.
+
+##### Security
+Because authentication and authorization are not within scope, there are few other security concerns. The main one
+is protecting against SQL injection attacks. This is mitigated by using the node-postgres's built in parameterized queries
+rather than string concatenation for query construction. 
+
+### Current Shortcomings/Considerations For Future Work
+
+- TSLint currently not configured
+- Needs more type checks in places
+- DB initialization query could be moved to a SQL file that executes via Docker entrypoint
+- Integration tests using supertest can be added to test whole data flow through API via HTTP request. The unit tests
+do not test the "messages within the last 30 days with a limit of 100" condition since that is handled by the database
+and the response is mocked in unit tests. An integration test can handle this case. The timestamp is currently set by the API
+rather than the user to avoid malicious manipulation, so instead of having to wait 30 days to test this, a different provider
+that allows the timestamp to be passed as a param can be run instead when in a test environment.
 
