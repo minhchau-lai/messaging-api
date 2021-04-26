@@ -22,10 +22,12 @@ describe('SendMessagesProvider Tests', () => {
 
     let postgresClient;
     let messagesProvider;
+    let res;
 
     beforeEach(() => {
         postgresClient = new PostgresClient();
         messagesProvider = SendMessagesProvider(postgresClient);
+        res = mockResponse();
     });
 
     afterEach(() => {
@@ -38,8 +40,6 @@ describe('SendMessagesProvider Tests', () => {
             recipientUsername: 'john',
             messageBody: 'some message here'
         };
-        const mockData = Promise.resolve('some UUID');
-        const res = mockResponse();
         const req = mockRequest(reqParams);
 
         postgresClient.executeQuery
@@ -58,7 +58,6 @@ describe('SendMessagesProvider Tests', () => {
             messageBody: 'some other message'
         };
 
-        const res = mockResponse();
         const req = mockRequest(reqParams);
 
         postgresClient.executeQuery.mockResolvedValue({rows: ['some-person']});
@@ -75,7 +74,6 @@ describe('SendMessagesProvider Tests', () => {
             messageBody: ''
         };
 
-        const res = mockResponse();
         const req = mockRequest(reqParams);
 
         await messagesProvider(req, res);
@@ -91,7 +89,6 @@ describe('SendMessagesProvider Tests', () => {
         };
 
         const dbError = Promise.reject('Some DB error');
-        const res = mockResponse();
         const req = mockRequest(reqParams);
 
         postgresClient.executeQuery.mockReturnValue(dbError);

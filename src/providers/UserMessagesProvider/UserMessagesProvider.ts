@@ -1,4 +1,4 @@
-import { PostgresClient } from '../clients/PostgresClient/PostgresClient';
+import { PostgresClient } from '../../clients/PostgresClient/PostgresClient';
 
 export const UserMessagesProvider = (postgresClient: PostgresClient) =>  {
     return async (req, res) => {
@@ -9,6 +9,11 @@ export const UserMessagesProvider = (postgresClient: PostgresClient) =>  {
         let queryValues = [recipientUsername];
         let validUsernames = true;
 
+        if (!recipientUsername) {
+            res.sendStatus(404);
+            return;
+        }
+
         await postgresClient
             .executeQuery(getUserQuery, queryValues)
             .then((data) => {
@@ -16,6 +21,13 @@ export const UserMessagesProvider = (postgresClient: PostgresClient) =>  {
                     res.sendStatus(404);
                     validUsernames = false;
                 }
+            })
+            .catch((error) => {
+                console.error(error);
+                res.sendStatus(500);
+                // res.sendStatus does not return/prevent further execution
+                // set false so that function returns before executing rest of provider logic
+                validUsernames = false;
             });
 
         if (senderUsername) {
@@ -31,9 +43,8 @@ export const UserMessagesProvider = (postgresClient: PostgresClient) =>  {
                 .catch((error) => {
                     console.error(error);
                     res.sendStatus(500);
+                    validUsernames = false;
                 });
-
-            if (!validUsernames) { return }
 
             userMessagesQuery = 'SELECT * FROM messages WHERE recipient_username = $1 ' +
                 'AND sender_username = $2 ' +
@@ -45,8 +56,10 @@ export const UserMessagesProvider = (postgresClient: PostgresClient) =>  {
             queryValues = [recipientUsername];
         }
 
+        if (!validUsernames) { return }
+
         await postgresClient.executeQuery(userMessagesQuery, queryValues)
-            .then((data) => {res.json({user:recipientUsername, messages: data.rows})})
+            .then((data) => {res.json({user: recipientUsername, messages: data.rows})})
             .catch((error) => {
                 console.error(error);
                 res.sendStatus(500);

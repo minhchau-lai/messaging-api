@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { PostgresClient } from '../clients/PostgresClient/PostgresClient';
 import { AllMessagesProvider } from '../providers/AllMessagesProvider/AllMessagesProvider';
 import { SendMessagesProvider } from '../providers/SendMessagesProvider/SendMessagesProvider';
-import {UserMessagesProvider} from "../providers/UserMessagesProvider";
+import {UserMessagesProvider} from "../providers/UserMessagesProvider/UserMessagesProvider";
 
 export const MessagesRouter = (postgresClient: PostgresClient) => {
     const messagesRouter = Router();

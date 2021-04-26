@@ -14,10 +14,12 @@ describe('AllMessagesProvider Tests', () => {
 
     let postgresClient;
     let messagesProvider;
+    let res;
 
     beforeEach(() => {
         postgresClient = new PostgresClient();
         messagesProvider = AllMessagesProvider(postgresClient);
+        res = mockResponse();
     });
 
     afterEach(() => {
@@ -29,7 +31,6 @@ describe('AllMessagesProvider Tests', () => {
             rows: [{message: 'something'}]
         };
         const mockData = Promise.resolve(messageData);
-        const res = mockResponse();
 
         postgresClient.executeQuery.mockReturnValue(mockData);
         await messagesProvider({}, res).then((data) => {
@@ -40,7 +41,6 @@ describe('AllMessagesProvider Tests', () => {
 
     it('should send 500 response on server error ', async () => {
         const dbError = Promise.reject('Some DB error');
-        const res = mockResponse();
 
         postgresClient.executeQuery.mockReturnValue(dbError);
         await messagesProvider({}, res)
