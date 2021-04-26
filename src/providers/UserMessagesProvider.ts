@@ -46,7 +46,7 @@ export const UserMessagesProvider = (postgresClient: PostgresClient) =>  {
         }
 
         await postgresClient.executeQuery(userMessagesQuery, queryValues)
-            .then((data) => {res.json({'user':recipientUsername, 'messages': data.rows})})
+            .then((data) => {res.json({user:recipientUsername, messages: data.rows})})
             .catch((error) => {
                 console.error(error);
                 res.sendStatus(500);

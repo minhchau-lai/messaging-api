@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { PostgresClient } from '../clients/PostgresClient/PostgresClient';
+import { PostgresClient } from '../../clients/PostgresClient/PostgresClient';
 
 export const SendMessagesProvider = (postgresClient: PostgresClient) => {
     return async (req, res) => {
@@ -19,12 +19,15 @@ export const SendMessagesProvider = (postgresClient: PostgresClient) => {
                 .executeQuery(getUserQuery, [senderUsername, recipientUsername])
                 .then( (data) => {
                     if (data.rows.length !== 2) {
-                        res.sendStatus(404)}
+                        res.sendStatus(404);
                         validSenderAndRecipient = false;
+                    }
                 })
                 .catch((error) => {
                         console.error(error);
                         res.sendStatus(500);
+                        // set flag so rest of function doesn't execute
+                        validSenderAndRecipient = false;
                 });
 
             if (!validSenderAndRecipient) { return }
@@ -33,7 +36,7 @@ export const SendMessagesProvider = (postgresClient: PostgresClient) => {
             const queryValues = [messageId, senderUsername, recipientUsername, messageBody];
 
             await postgresClient.executeQuery(insertMessageQuery, queryValues)
-                .then((data) => res.status(201).send({'messages': data.rows[0]}))
+                .then((data) => res.status(201).send({messages: data.rows[0]}))
                 .catch((error) => {
                     console.error(error);
                     res.sendStatus(500);
