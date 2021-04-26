@@ -1,15 +1,19 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { PostgresClient } from './clients/PostgresClient/PostgresClient';
 import { MessagesRouter } from './routes/MessagesRouter';
+import { PostgresClient } from './clients/PostgresClient/PostgresClient';
+import { swaggerConfig } from './resources/swagger'
+
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
-
+app.use(bodyParser.json());
 const port = process.env.port || 3000;
 
 const postgresClient = new PostgresClient();
 
-app.use(bodyParser.json());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
 app.use('/messages', MessagesRouter(postgresClient));
 
