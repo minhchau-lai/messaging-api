@@ -45,6 +45,7 @@ describe('SendMessagesProvider Tests', () => {
         postgresClient.executeQuery
             .mockReturnValueOnce(Promise.resolve({rows: ['minhminh', 'john']}))
             .mockReturnValueOnce(Promise.resolve({rows: ['some UUID']}));
+
         await messagesProvider(req, res).then((data) => {
             expect(postgresClient.executeQuery).toHaveBeenCalledTimes(2);
             expect(res.status).toHaveBeenCalledWith(201);
@@ -61,6 +62,7 @@ describe('SendMessagesProvider Tests', () => {
         const req = mockRequest(reqParams);
 
         postgresClient.executeQuery.mockResolvedValue({rows: ['some-person']});
+
         await messagesProvider(req, res).then((data) => {
             expect(postgresClient.executeQuery).toHaveBeenCalledTimes(1);
             expect(res.sendStatus).toHaveBeenCalledWith(404);
@@ -92,6 +94,7 @@ describe('SendMessagesProvider Tests', () => {
         const req = mockRequest(reqParams);
 
         postgresClient.executeQuery.mockReturnValue(dbError);
+
         await messagesProvider(req, res)
             .then((data) => {
                 expect(postgresClient.executeQuery).toHaveBeenCalledTimes(1);

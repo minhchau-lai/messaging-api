@@ -47,6 +47,7 @@ describe('UserMessagesProvider Tests', () => {
         postgresClient.executeQuery
             .mockReturnValueOnce(Promise.resolve({rows: [recipient]}))
             .mockReturnValueOnce(Promise.resolve({rows: mockMessages}));
+
         await messagesProvider(req, response).then((data) => {
             expect(postgresClient.executeQuery).toHaveBeenCalledTimes(2);
             expect(response.json).toHaveBeenCalledWith({user: recipient, messages: mockMessages});
@@ -63,6 +64,7 @@ describe('UserMessagesProvider Tests', () => {
             .mockReturnValueOnce(Promise.resolve({rows: [recipient]}))
             .mockReturnValueOnce(Promise.resolve({rows: [sender]}))
             .mockReturnValueOnce(Promise.resolve({rows: mockMessages}));
+
         await messagesProvider(req, response).then((data) => {
             expect(postgresClient.executeQuery).toHaveBeenCalledTimes(3);
             expect(response.json).toHaveBeenCalledWith({user: recipient, messages: mockMessages});
@@ -142,6 +144,7 @@ describe('UserMessagesProvider Tests', () => {
             .mockReturnValueOnce(Promise.resolve({rows: [recipient]}))
             .mockReturnValueOnce(Promise.resolve({rows: [sender]}))
             .mockReturnValueOnce(Promise.reject('some error'));
+
         await messagesProvider(req, response).then((data) => {
             expect(postgresClient.executeQuery).toHaveBeenCalledTimes(3);
             expect(response.sendStatus).toHaveBeenCalledWith(500);

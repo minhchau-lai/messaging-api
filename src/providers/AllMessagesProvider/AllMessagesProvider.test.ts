@@ -33,6 +33,7 @@ describe('AllMessagesProvider Tests', () => {
         const mockData = Promise.resolve(messageData);
 
         postgresClient.executeQuery.mockReturnValue(mockData);
+
         await messagesProvider({}, res).then((data) => {
             expect(postgresClient.executeQuery).toHaveBeenCalledTimes(1);
             expect(res.json).toHaveBeenCalledWith({messages: messageData.rows});
@@ -43,6 +44,7 @@ describe('AllMessagesProvider Tests', () => {
         const dbError = Promise.reject('Some DB error');
 
         postgresClient.executeQuery.mockReturnValue(dbError);
+
         await messagesProvider({}, res)
             .then((data) => {
                 expect(postgresClient.executeQuery).toHaveBeenCalledTimes(1);
